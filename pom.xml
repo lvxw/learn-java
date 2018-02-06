@@ -7,7 +7,7 @@
     <groupId>com.test</groupId>
     <artifactId>learn-java</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <modules>
         <module>learnLog4j</module>
         <module>learnException</module>
