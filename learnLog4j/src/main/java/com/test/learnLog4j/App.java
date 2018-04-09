@@ -1,4 +1,4 @@
-package com.test.learnLog4j.duplication;
+package com.test.learnLog4j;
 
 import org.apache.log4j.Logger;
 

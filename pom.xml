@@ -11,6 +11,11 @@
     <modules>
         <module>learnLog4j</module>
         <module>learnException</module>
+        <module>learnList</module>
+        <module>learnDesignPatterns</module>
+        <module>learnEnum</module>
+        <module>learnJdk8</module>
+        <module>learnAdvanced</module>
     </modules>
 
     <dependencies>
