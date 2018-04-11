@@ -11,5 +11,13 @@
 
     <artifactId>learnAdvanced</artifactId>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>24.0-jre</version>
+        </dependency>
 
+    </dependencies>
 </project>
