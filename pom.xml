@@ -10,11 +10,7 @@
     <version>1.0</version>
     <modules>
         <module>learnLog4j</module>
-        <module>learnException</module>
-        <module>learnList</module>
         <module>learnDesignPatterns</module>
-        <module>learnEnum</module>
-        <module>learnJdk8</module>
         <module>learnAdvanced</module>
     </modules>
 
@@ -24,13 +20,27 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-            <scope>test</scope>
         </dependency>
-
     </dependencies>
-
+    <build>
+        <finalName>myweb</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

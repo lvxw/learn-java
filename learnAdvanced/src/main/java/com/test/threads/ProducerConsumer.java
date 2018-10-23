@@ -22,43 +22,41 @@ class SyncStack{
     MoMo[] bucket = new MoMo[10];
 
     public synchronized void push(MoMo moMo){
-        if(index == 10){
+        while(index == 10){
             try {
                 this.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-        }else{
-            this.notifyAll();
-            bucket[index] = moMo;
-            index ++;
-            System.out.println(moMo+"被"+Thread.currentThread().getName()+"放入了篮子");
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }
+        this.notifyAll();
+        bucket[index] = moMo;
+        index ++;
+        System.out.println(moMo+"被"+Thread.currentThread().getName()+"放入了篮子");
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }
 
     public synchronized void pop(){
-        if(index == 0){
+        while(index == 0){
             try {
                 this.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }else{
-            this.notifyAll();
-            index --;
-            System.out.println(bucket[index]+"被"+Thread.currentThread().getName()+"取走");
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }
+        this.notifyAll();
+        index --;
+        System.out.println(bucket[index]+"被"+Thread.currentThread().getName()+"取走");
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
@@ -105,11 +103,14 @@ public class ProducerConsumer {
         producer1.start();
         producer producer2 = new producer(syncStack,"producer2");
         producer2.start();
+        producer producer3 = new producer(syncStack,"producer3");
+        producer3.start();
 
         Consumer consumer1 = new Consumer(syncStack,"consumer1");
         consumer1.start();
-
         Consumer consumer2 = new Consumer(syncStack,"consumer2");
         consumer2.start();
+        Consumer consumer3 = new Consumer(syncStack,"consumer3");
+        consumer3.start();
     }
 }
