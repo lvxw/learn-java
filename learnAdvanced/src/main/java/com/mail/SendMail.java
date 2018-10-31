@@ -1,4 +1,4 @@
-package com.funshion.artemis.mail;
+package com.mail;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -9,10 +9,13 @@ import javax.mail.event.TransportListener;
 import javax.mail.internet.*;
 import java.util.Properties;
 
+/**
+ * @author lvxw
+ */
 public class SendMail {
 
     private enum MailSentState {
-        INITIAL, SUCCESS, FAILURE, PARTIALLY_SUCCESS,
+        INITIAL, SUCCESS, FAILURE, PARTIALLY_SUCCESS
     }
 
 
@@ -32,6 +35,7 @@ public class SendMail {
         }
     }
 
+
     private static Address[] getAddressObjArr(String addresses) throws Exception{
         String[] addressArr = addresses.split(",");
         Address[] addressObjArr = new InternetAddress[addressArr.length];
@@ -42,9 +46,14 @@ public class SendMail {
 
         return addressObjArr;
     }
-    private static void addAttachment(String attachmentPaths,Multipart multipart) throws Exception{
-        String[] attachmentPathArr = attachmentPaths.split(",");
 
+
+    private static void addAttachment(String attachmentPaths, Multipart multipart) throws Exception{
+        if("".equals(attachmentPaths.trim())){
+            return;
+        }
+
+        String[] attachmentPathArr = attachmentPaths.split(",");
         for(int i=0;i<attachmentPathArr.length;i++){
             BodyPart messageBodyPart_attachment = new MimeBodyPart();
             DataSource source = new FileDataSource(attachmentPathArr[i].split("\\|")[0]);
@@ -56,10 +65,12 @@ public class SendMail {
 
     }
 
+
     public static String sendMail(String subject,String content, String attachmentPaths, String from,String addresses,String host,String auth,String username,String password){
         Properties props = System.getProperties();
         props.setProperty("mail.smtp.host", host);
-        props.put("mail.smtp.auth", auth);
+        props.setProperty("mail.smtp.port", "25");
+        props.put("mail.smtp.auth", true);
         props.setProperty("mail.user", username);
         props.setProperty("mail.password", password);
 
@@ -85,39 +96,45 @@ public class SendMail {
 
             Transport transport = session.getTransport();
             transport.addTransportListener(new TransportListener() {
-                public void messageDelivered(TransportEvent arg0) {
+                @Override
+                public void messageDelivered(TransportEvent env) {
                     future.setState(MailSentState.SUCCESS);
                 }
-                public void messageNotDelivered(TransportEvent arg0) {
+                @Override
+                public void messageNotDelivered(TransportEvent env) {
                     future.setState(MailSentState.FAILURE);
                 }
-                public void messagePartiallyDelivered(TransportEvent arg0) {
+                @Override
+                public void messagePartiallyDelivered(TransportEvent env) {
                     future.setState(MailSentState.PARTIALLY_SUCCESS);
                 }
             });
-            transport.connect();
+            transport.connect(host,username,password);
             transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
             future.waitForReady();
+            transport.close();
         } catch (Exception e) {
-            future.setState(MailSentState.FAILURE);
-            errMsg = e.toString();
+            errMsg = e.toString()
+                    .replaceAll("\n|\t"," ")
+                    .replaceAll("\\s{2,}"," ");
         }
 
-        return "{state:'"+future.getState()+"',err:'"+errMsg+"'}";
+        return "{\"subject\":\""+subject+"\", \"state\":\""+future.getState()+"\", \"err\":\""+errMsg+"\"}";
     }
+
 
 
     public static void main(String[] args) throws  Exception{
 
-        String subject = "test_title_EEE";
+        String subject = "";
         String content = "<h1>这是一份测试邮件_EEE</h1>";
-        String attachmentPaths = "E:/project_sync_repository/artemis-sendmail-service/lib/1.txt|1.txt,E:/project_sync_repository/artemis-sendmail-service/lib/2.txt|2.txt";
-        String from = "microlens_admin@funshion.com";
-        String to = "lvxw@fun.tv";
-        String host = "mail.funshion.com";
-        String auth = "hadoop";
-        String username = "microlens_admin@funshion.com";
-        String password = "Funshion&*90";
+        String attachmentPaths = "";
+        String from = "";
+        String to = "";
+        String host = "";
+        String auth = "";
+        String username = "";
+        String password = "";
 
 
         String re = SendMail.sendMail(subject, content,attachmentPaths, from, to, host, auth, username, password);
