@@ -12,6 +12,7 @@
         <module>learnLog4j</module>
         <module>learnDesignPatterns</module>
         <module>learnAdvanced</module>
+        <module>learnAnnotation</module>
     </modules>
 
     <dependencies>
